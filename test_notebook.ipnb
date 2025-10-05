@@ -1,0 +1,40 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "2ed07a8b-3907-436d-a2fa-dacdd0a93595",
+   "metadata": {
+    "collapsed": true,
+    "id": "2ed07a8b-3907-436d-a2fa-dacdd0a93595",
+    "jupyter": {
+     "outputs_hidden": true
+    }
+   },
+   "outputs": [],
+   "source": [
+    "print('hello world')",
+   ]
+  }
+ ],
+ "metadata": {
+  "colab": {
+   "generative_ai_disabled": true,
+   "name": "Test Notebook",
+   "provenance": []
+  },
+  "jupytext": {
+   "formats": "ipynb,py:percent",
+   "main_language": "python"
+  },
+  "kernelspec": {
+   "display_name": "Python 3",
+   "name": "python3"
+  },
+  "language_info": {
+   "name": "python"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
