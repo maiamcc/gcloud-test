@@ -3,6 +3,7 @@
 from datetime import datetime
 import os
 
+from google.cloud import bigquery
 from jmapc import Client, MailboxQueryFilterCondition, Ref
 from jmapc.methods import MailboxGet, MailboxGetResponse, MailboxQuery
 
@@ -16,6 +17,7 @@ def hello_world(_):
     do anything with this arg!
     """
     hello_fastmail()
+    hello_bigquery()
     return 'OK'  # like, it's not a web endpoint but let's pretend??
 
 def hello_fastmail():
@@ -29,8 +31,8 @@ def hello_fastmail():
     # The second method, Mailbox/get, uses a result reference to the preceding
     # Mailbox/query method to retrieve the Inbox mailbox details
     methods = [
-        MailboxQuery(filter=MailboxQueryFilterCondition(name="Inbox")),
-        MailboxGet(ids=Ref("/ids")),
+        MailboxQuery(filter=MailboxQueryFilterCondition(name='Inbox')),
+        MailboxGet(ids=Ref('/ids')),
     ]
 
     # Call JMAP API with the prepared request
@@ -46,7 +48,7 @@ def hello_fastmail():
     # Retrieve the Mailbox data from the result data model
     assert isinstance(
         method_2_result_data, MailboxGetResponse
-    ), "Error in Mailbox/get method"
+    ), 'Error in Mailbox/get method'
     mailboxes = method_2_result_data.data
 
     # Although multiple mailboxes may be present in the results, we only expect a
@@ -54,11 +56,35 @@ def hello_fastmail():
     mailbox = mailboxes[0]
 
     # Print some information about the mailbox
-    print(f"Found the mailbox named {mailbox.name} with ID {mailbox.id}")
-    print(
-        f"\tThis mailbox has {mailbox.total_emails} emails, "
-        f"{mailbox.unread_emails} of which are unread"
+    print(f'SUCCESSFULLY CONNECTED TO FASTMAIL!\n\tMailbox "{mailbox.name}" has {mailbox.total_emails} emails ({mailbox.unread_emails} unread)')
+
+
+def hello_bigquery():
+    bq_client = bigquery.Client()
+
+    # Test read access
+    query_job = bq_client.query('select * from stot-466715.etl_dev.activity_log order by event_datetime desc limit 1')  # API request
+    rows = query_job.result()  # Waits for query to finish
+
+    print(f'QUERY RESULTS: {rows}')
+    for row in rows:
+        print(row)
+
+    # Safe way to test write access
+    bq_client.insert_rows_json(
+        'stot-466715.etl_dev.activity_log',
+        [
+            {
+                'event_datetime': str(datetime.now()),
+                'event': 'Test write access',
+                'latest_date_loaded': None,
+           },
+        ]
     )
 
-if __name__ == "__main__":
+    print('SUCCESSFULLY DID BIGQUERY STUFF (i... think?)')
+
+
+if __name__ == '__main__':
     hello_fastmail()
+    hello_bigquery()
